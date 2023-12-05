@@ -1,0 +1,43 @@
+#include<LiquidCrystal.h>
+
+#define TRIG_PIN 4
+#define ECHO_PIN 3
+
+long readUltrasonicDistance(int triggerPin, int echoPin)
+{
+  pinMode(triggerPin, OUTPUT);  // Clear the trigger
+  digitalWrite(triggerPin, LOW);
+  delayMicroseconds(2);
+  // Sets the trigger pin to HIGH state for 10 microseconds
+  digitalWrite(triggerPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(triggerPin, LOW);
+  pinMode(echoPin, INPUT);
+  // Reads the echo pin, and returns the sound wave travel time in microseconds
+  return pulseIn(echoPin, HIGH);
+}
+  
+float a;
+float b;
+LiquidCrystal lcd(7, 8, 9, 10, 11, 12);
+
+void setup() {
+  lcd.begin(16, 2);
+  Serial.begin(9600);
+} 
+
+void loop(){
+  a = readUltrasonicDistance(TRIG_PIN,ECHO_PIN);
+  delay(1000);
+  b = readUltrasonicDistance(TRIG_PIN,ECHO_PIN);
+  
+  lcd.setCursor(0, 0); 
+  lcd.print((a - b)/100);
+  lcd.print(" m/s     ");
+  lcd.setCursor(0, 1); 
+  lcd.print((a-b)/27.778);
+  lcd.print(" km/h      ");
+  Serial.println((a - b)/100);
+    
+  delay(1000);
+}
